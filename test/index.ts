@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import ConnectionString from '../';
+import ConnectionString, { CommaAndColonSeparatedRecord } from '../';
 
 describe('ConnectionString', () => {
   context('with valid URIs', () => {
@@ -164,5 +164,43 @@ describe('ConnectionString', () => {
       expect(() => { cs.port = '1000'; }).to.throw(Error);
       expect(() => { cs.href = 'mongodb://localhost'; }).to.throw(Error);
     });
+  });
+});
+
+describe('CommaAndColonSeparatedRecord', () => {
+  it('creates an empty map for empty input', () => {
+    expect(new CommaAndColonSeparatedRecord('').size).to.equal(0);
+    expect(new CommaAndColonSeparatedRecord().size).to.equal(0);
+    expect(new CommaAndColonSeparatedRecord(null).size).to.equal(0);
+    expect(new CommaAndColonSeparatedRecord(undefined).size).to.equal(0);
+  });
+
+  it('returns an empty string for empty input', () => {
+    expect(new CommaAndColonSeparatedRecord('').toString()).to.equal('');
+    expect(new CommaAndColonSeparatedRecord().toString()).to.equal('');
+    expect(new CommaAndColonSeparatedRecord(null).toString()).to.equal('');
+    expect(new CommaAndColonSeparatedRecord(undefined).toString()).to.equal('');
+  });
+
+  it('allows getting entries', () => {
+    const record = new CommaAndColonSeparatedRecord('A:B,C:D');
+    expect(record.toString()).to.equal('A:B,C:D');
+    expect(record.get('A')).to.equal('B');
+    expect(record.get('C')).to.equal('D');
+    expect(record.get('foo')).to.equal(undefined);
+  });
+
+  it('allows setting entries', () => {
+    const record = new CommaAndColonSeparatedRecord('A:B,C:D');
+    record.set('A', '0');
+    record.set('E', '1');
+    expect(record.toString()).to.equal('A:0,C:D,E:1');
+  });
+
+  it('accepts cases of multiple-colon entries', () => {
+    const record = new CommaAndColonSeparatedRecord('A:B:C,D');
+    expect(record.toString()).to.equal('A:B:C,D:');
+    expect(record.get('A')).to.equal('B:C');
+    expect(record.get('D')).to.equal('');
   });
 });

@@ -164,3 +164,23 @@ export default class ConnectionString extends URLWithoutHost {
     return { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash };
   }
 }
+
+/**
+ * Parses and serializes the format of the authMechanismProperties or
+ * readPreferenceTags connection string parameters.
+ */
+export class CommaAndColonSeparatedRecord extends Map<string, string> {
+  constructor(from?: string | null) {
+    super((from ?? '').split(',').filter(Boolean).map(entry => {
+      const colonIndex = entry.indexOf(':');
+      if (colonIndex === -1) {
+        return [entry, ''];
+      }
+      return [entry.slice(0, colonIndex), entry.slice(colonIndex + 1)];
+    }));
+  }
+
+  toString(): string {
+    return [...this].map(entry => entry.join(':')).join(',');
+  }
+}

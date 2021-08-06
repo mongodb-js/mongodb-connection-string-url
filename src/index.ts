@@ -13,7 +13,7 @@ class CaseInsensitiveMap extends Map<string, string> {
     return super.delete(this._normalizeKey(name));
   }
 
-  get(name: any): string | null {
+  get(name: any): string | undefined {
     return super.get(this._normalizeKey(name));
   }
 

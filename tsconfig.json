@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "downlevelIteration": true,
     "sourceMap": true,
-    "strictNullChecks": false,
+    "strict": true,
     "declaration": true,
     "removeComments": true,
     "target": "es2018",

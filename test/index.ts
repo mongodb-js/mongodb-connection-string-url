@@ -203,4 +203,13 @@ describe('CommaAndColonSeparatedRecord', () => {
     expect(record.get('A')).to.equal('B:C');
     expect(record.get('D')).to.equal('');
   });
+
+  it('is case-insensitive', () => {
+    const record = new CommaAndColonSeparatedRecord('foo:bar,FOO:BAR');
+    expect(record.toString()).to.equal('foo:BAR');
+    expect(record.get('FOO')).to.equal('BAR');
+    expect(record.get('foo')).to.equal('BAR');
+    record.set('FOO', 'baz');
+    expect(record.toString()).to.equal('foo:baz');
+  });
 });

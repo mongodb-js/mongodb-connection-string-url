@@ -8,6 +8,35 @@ const HOSTS_REGEX = new RegExp(
   String.raw`(?<protocol>mongodb(?:\+srv|)):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^\/?@]+)(?<rest>.*)`
 );
 
+class CaseInsensitiveMap extends Map<string, string> {
+  delete(name: any): boolean {
+    return super.delete(this._normalizeKey(name));
+  }
+
+  get(name: any): string | null {
+    return super.get(this._normalizeKey(name));
+  }
+
+  has(name: any): boolean {
+    return super.has(this._normalizeKey(name));
+  }
+
+  set(name: any, value: any): this {
+    return super.set(this._normalizeKey(name), value);
+  }
+
+  _normalizeKey(name: any): string {
+    name = `${name}`;
+    for (const key of this.keys()) {
+      if (key.toLowerCase() === name.toLowerCase()) {
+        name = key;
+        break;
+      }
+    }
+    return name;
+  }
+}
+
 const caseInsenstiveURLSearchParams = (Ctor: typeof URLSearchParams) =>
   class CaseInsenstiveURLSearchParams extends Ctor {
     append(name: any, value: any): void {
@@ -35,14 +64,7 @@ const caseInsenstiveURLSearchParams = (Ctor: typeof URLSearchParams) =>
     }
 
     _normalizeKey(name: any): string {
-      name = `${name}`;
-      for (const key of this.keys()) {
-        if (key.toLowerCase() === name.toLowerCase()) {
-          name = key;
-          break;
-        }
-      }
-      return name;
+      return CaseInsensitiveMap.prototype._normalizeKey.call(this, name);
     }
   };
 
@@ -169,15 +191,19 @@ export default class ConnectionString extends URLWithoutHost {
  * Parses and serializes the format of the authMechanismProperties or
  * readPreferenceTags connection string parameters.
  */
-export class CommaAndColonSeparatedRecord extends Map<string, string> {
+export class CommaAndColonSeparatedRecord extends CaseInsensitiveMap {
   constructor(from?: string | null) {
-    super((from ?? '').split(',').filter(Boolean).map(entry => {
+    super();
+    for (const entry of (from ?? '').split(',')) {
+      if (!entry) continue;
       const colonIndex = entry.indexOf(':');
+      // Use .set() to properly account for case insensitivity
       if (colonIndex === -1) {
-        return [entry, ''];
+        this.set(entry, '');
+      } else {
+        this.set(entry.slice(0, colonIndex), entry.slice(colonIndex + 1));
       }
-      return [entry.slice(0, colonIndex), entry.slice(colonIndex + 1)];
-    }));
+    }
   }
 
   toString(): string {

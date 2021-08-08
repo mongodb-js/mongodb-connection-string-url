@@ -56,7 +56,7 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "whatwg-url": "^8.4.0",
-    "@types/whatwg-url": "^8.0.0"
+    "@types/whatwg-url": "^8.2.1",
+    "whatwg-url": "^9.1.0"
   }
 }

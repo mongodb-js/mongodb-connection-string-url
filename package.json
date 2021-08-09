@@ -1,6 +1,6 @@
 {
   "name": "mongodb-connection-string-url",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "MongoDB connection strings, based on the WhatWG URL API",
   "keywords": [
     "password",

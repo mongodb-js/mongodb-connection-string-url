@@ -7,7 +7,7 @@
     "declaration": true,
     "removeComments": true,
     "target": "es2018",
-    "lib": ["es2018"],
+    "lib": ["es2018", "dom"],
     "outDir": "./lib",
     "moduleResolution": "node",
     "module": "commonjs"

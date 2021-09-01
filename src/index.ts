@@ -1,5 +1,3 @@
-import { URL, URLSearchParams } from 'whatwg-url';
-
 const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 
 // Adapted from the Node.js driver code:
@@ -110,7 +108,7 @@ export default class ConnectionString extends URLWithoutHost {
       decodeURIComponent(username ?? '');
       decodeURIComponent(password ?? '');
     } catch (err) {
-      throw new MongoParseError(err.message);
+      throw new MongoParseError((err as Error).message);
     }
 
     // characters not permitted in username nor password Set([':', '/', '?', '#', '[', ']', '@'])

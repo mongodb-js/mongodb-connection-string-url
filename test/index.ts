@@ -105,7 +105,7 @@ describe('ConnectionString', () => {
           // eslint-disable-next-line no-new
           new ConnectionString(uri);
         } catch (err) {
-          expect(err.name).to.equal('MongoParseError');
+          expect((err as Error).name).to.equal('MongoParseError');
           return;
         }
         expect.fail('missed exception');

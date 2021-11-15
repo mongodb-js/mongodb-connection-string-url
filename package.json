@@ -57,6 +57,6 @@
   },
   "dependencies": {
     "@types/whatwg-url": "^8.2.1",
-    "whatwg-url": "^9.1.0"
+    "whatwg-url": "^11.0.0"
   }
 }

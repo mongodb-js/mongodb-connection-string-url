@@ -26,14 +26,15 @@ export function redactValidConnectionString(inputUrl: Readonly<ConnectionString>
 }
 
 export function redactConnectionString(uri: string): string {
+  let parsed: ConnectionString | undefined;
   try {
+    parsed = new ConnectionString(uri);
+  } catch {}
+  if (parsed) {
     // If we can parse the connection string, use the more precise
     // redaction logic.
-    return (new ConnectionString(uri))
-      .redact()
-      .toString()
-      .replace(/_credentials_/g, '<credentials>');
-  } catch {}
+    return parsed.redact().toString().replace(/_credentials_/g, '<credentials>');
+  }
 
   const regexes = [
     // Username and password

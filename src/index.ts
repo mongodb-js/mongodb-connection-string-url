@@ -11,7 +11,7 @@ const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 // Adapted from the Node.js driver code:
 // https://github.com/mongodb/node-mongodb-native/blob/350d14fde5b24480403313cfe5044f6e4b25f6c9/src/connection_string.ts#L146-L206
 const HOSTS_REGEX = new RegExp(
-  String.raw`(?<protocol>mongodb(?:\+srv|)):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^\/?@]+)(?<rest>.*)`
+  String.raw`^(?<protocol>mongodb(?:\+srv|)):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^\/?@]+)(?<rest>.*)`
 );
 
 class CaseInsensitiveMap extends Map<string, string> {

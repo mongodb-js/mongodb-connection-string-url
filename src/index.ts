@@ -1,4 +1,6 @@
 import { URL, URLSearchParams } from 'whatwg-url';
+import { redactValidConnectionString, redactConnectionString } from './redact';
+export { redactConnectionString };
 
 const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 
@@ -179,6 +181,10 @@ export default class ConnectionString extends URLWithoutHost {
 
   clone(): ConnectionString {
     return new ConnectionString(this.toString());
+  }
+
+  redact(): ConnectionString {
+    return redactValidConnectionString(this);
   }
 
   [Symbol.for('nodejs.util.inspect.custom')](): any {

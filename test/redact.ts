@@ -9,6 +9,11 @@ describe('redact credentials', () => {
           .to.equal(`${protocol}://<credentials>@cats-data-sets-e08dy.mongodb.net/admin`);
       });
 
+      it('returns the <credentials> keeping the username if desired', () => {
+        expect(redactConnectionString(`${protocol}://admin:catsc@tscat3ca1s@cats-data-sets-e08dy.mongodb.net/admin`, { redactUsernames: false }))
+          .to.equal(`${protocol}://admin:<credentials>@cats-data-sets-e08dy.mongodb.net/admin`);
+      });
+
       it('returns the <credentials> in output instead of IAM session token', () => {
         expect(redactConnectionString(`${protocol}://cats-data-sets-e08dy.mongodb.net/admin?authMechanism=MONGODB-AWS&authMechanismProperties=AWS_SESSION_TOKEN%3Asampletoken,else%3Amiau&param=true`).replace(/%2C/g, ','))
           .to.equal(`${protocol}://cats-data-sets-e08dy.mongodb.net/admin?authMechanism=MONGODB-AWS&authMechanismProperties=AWS_SESSION_TOKEN%3A<credentials>,else%3Amiau&param=true`);
@@ -33,6 +38,10 @@ describe('redact credentials', () => {
           .to.equal(`${protocol}://<credentials>@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=<credentials>&proxyPassword=<credentials>&param=true`);
         expect(redactConnectionString(`${protocol}://admin:tscat3ca1s@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=foo&proxyPassword=bar`))
           .to.equal(`${protocol}://<credentials>@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=<credentials>&proxyPassword=<credentials>`);
+        expect(redactConnectionString(`${protocol}://admin:tscat3ca1s@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=foo&proxyPassword=bar`, { redactUsernames: false }))
+          .to.equal(`${protocol}://admin:<credentials>@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=foo&proxyPassword=<credentials>`);
+        expect(redactConnectionString(`${protocol}://admin:tscat3ca1s@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=foo&proxyPassword=bar`, { replacementString: '****' }))
+          .to.equal(`${protocol}://****@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=****&proxyPassword=****`);
       });
     });
 

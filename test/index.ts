@@ -215,3 +215,20 @@ describe('CommaAndColonSeparatedRecord', () => {
     expect(record.toString()).to.equal('foo:baz');
   });
 });
+
+describe('TypeScript support', () => {
+  it('allows specifying typed search parameters', () => {
+    const cs = new ConnectionString('mongodb://localhost/?tls=true&tls2=false');
+    const sp = cs.typedSearchParams<{ tls: string }>();
+    expect(sp.get('tls')).to.equal('true');
+    // @ts-expect-error
+    expect(sp.get('tls2')).to.equal('false');
+  });
+
+  it('allows specifying typed comma-and-colon-separated-record types', () => {
+    const record = new CommaAndColonSeparatedRecord<{ foo: string }>('foo:bar,baz:quux');
+    expect(record.get('foo')).to.equal('bar');
+    // @ts-expect-error
+    expect(record.get('baz')).to.equal('quux');
+  });
+});

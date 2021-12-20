@@ -14,24 +14,24 @@ const HOSTS_REGEX = new RegExp(
   String.raw`^(?<protocol>mongodb(?:\+srv|)):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^\/?@]+)(?<rest>.*)`
 );
 
-class CaseInsensitiveMap extends Map<string, string> {
-  delete(name: any): boolean {
+class CaseInsensitiveMap<K extends string = string> extends Map<K, string> {
+  delete(name: K): boolean {
     return super.delete(this._normalizeKey(name));
   }
 
-  get(name: any): string | undefined {
+  get(name: K): string | undefined {
     return super.get(this._normalizeKey(name));
   }
 
-  has(name: any): boolean {
+  has(name: K): boolean {
     return super.has(this._normalizeKey(name));
   }
 
-  set(name: any, value: any): this {
+  set(name: K, value: any): this {
     return super.set(this._normalizeKey(name), value);
   }
 
-  _normalizeKey(name: any): string {
+  _normalizeKey(name: any): K {
     name = `${name}`;
     for (const key of this.keys()) {
       if (key.toLowerCase() === name.toLowerCase()) {
@@ -43,36 +43,37 @@ class CaseInsensitiveMap extends Map<string, string> {
   }
 }
 
-const caseInsenstiveURLSearchParams = (Ctor: typeof URLSearchParams) =>
-  class CaseInsenstiveURLSearchParams extends Ctor {
-    append(name: any, value: any): void {
+function caseInsenstiveURLSearchParams<K extends string = string>(Ctor: typeof URLSearchParams) {
+  return class CaseInsenstiveURLSearchParams extends Ctor {
+    append(name: K, value: any): void {
       return super.append(this._normalizeKey(name), value);
     }
 
-    delete(name: any): void {
+    delete(name: K): void {
       return super.delete(this._normalizeKey(name));
     }
 
-    get(name: any): string | null {
+    get(name: K): string | null {
       return super.get(this._normalizeKey(name));
     }
 
-    getAll(name: any): string[] {
+    getAll(name: K): string[] {
       return super.getAll(this._normalizeKey(name));
     }
 
-    has(name: any): boolean {
+    has(name: K): boolean {
       return super.has(this._normalizeKey(name));
     }
 
-    set(name: any, value: any): void {
+    set(name: K, value: any): void {
       return super.set(this._normalizeKey(name), value);
     }
 
-    _normalizeKey(name: any): string {
+    _normalizeKey(name: K): string {
       return CaseInsensitiveMap.prototype._normalizeKey.call(this, name);
     }
   };
+}
 
 // Abstract middle class to appease TypeScript, see https://github.com/microsoft/TypeScript/pull/37894
 abstract class URLWithoutHost extends URL {
@@ -191,6 +192,11 @@ export default class ConnectionString extends URLWithoutHost {
     return redactValidConnectionString(this, options);
   }
 
+  typedSearchParams<T extends {}>() {
+    const sametype = (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams));
+    return this.searchParams as unknown as typeof sametype;
+  }
+
   [Symbol.for('nodejs.util.inspect.custom')](): any {
     const { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash } = this;
     return { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash };
@@ -201,7 +207,7 @@ export default class ConnectionString extends URLWithoutHost {
  * Parses and serializes the format of the authMechanismProperties or
  * readPreferenceTags connection string parameters.
  */
-export class CommaAndColonSeparatedRecord extends CaseInsensitiveMap {
+export class CommaAndColonSeparatedRecord<K extends {} = {[key: string]: any}> extends CaseInsensitiveMap<keyof K & string> {
   constructor(from?: string | null) {
     super();
     for (const entry of (from ?? '').split(',')) {
@@ -209,9 +215,9 @@ export class CommaAndColonSeparatedRecord extends CaseInsensitiveMap {
       const colonIndex = entry.indexOf(':');
       // Use .set() to properly account for case insensitivity
       if (colonIndex === -1) {
-        this.set(entry, '');
+        this.set(entry as (keyof K & string), '');
       } else {
-        this.set(entry.slice(0, colonIndex), entry.slice(colonIndex + 1));
+        this.set(entry.slice(0, colonIndex) as (keyof K & string), entry.slice(colonIndex + 1));
       }
     }
   }

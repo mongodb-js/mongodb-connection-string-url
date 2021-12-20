@@ -69,6 +69,22 @@ function caseInsenstiveURLSearchParams<K extends string = string>(Ctor: typeof U
       return super.set(this._normalizeKey(name), value);
     }
 
+    keys(): IterableIterator<K> {
+      return super.keys() as IterableIterator<K>;
+    }
+
+    values(): IterableIterator<string> {
+      return super.values();
+    }
+
+    entries(): IterableIterator<[K, string]> {
+      return super.entries() as IterableIterator<[K, string]>;
+    }
+
+    [Symbol.iterator](): IterableIterator<[K, string]> {
+      return super[Symbol.iterator]() as IterableIterator<[K, string]>;
+    }
+
     _normalizeKey(name: K): string {
       return CaseInsensitiveMap.prototype._normalizeKey.call(this, name);
     }

@@ -221,14 +221,14 @@ describe('TypeScript support', () => {
     const cs = new ConnectionString('mongodb://localhost/?tls=true&tls2=false');
     const sp = cs.typedSearchParams<{ tls: string }>();
     expect(sp.get('tls')).to.equal('true');
-    // @ts-expect-error
+    // @ts-expect-error should fail
     expect(sp.get('tls2')).to.equal('false');
   });
 
   it('allows specifying typed comma-and-colon-separated-record types', () => {
     const record = new CommaAndColonSeparatedRecord<{ foo: string }>('foo:bar,baz:quux');
     expect(record.get('foo')).to.equal('bar');
-    // @ts-expect-error
+    // @ts-expect-error should fail
     expect(record.get('baz')).to.equal('quux');
   });
 });

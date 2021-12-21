@@ -208,8 +208,8 @@ export default class ConnectionString extends URLWithoutHost {
     return redactValidConnectionString(this, options);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  typedSearchParams<T extends Record<string, unknown>>() {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/ban-types
+  typedSearchParams<T extends {}>() {
     const sametype = (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
     return this.searchParams as unknown as typeof sametype;
   }
@@ -224,7 +224,8 @@ export default class ConnectionString extends URLWithoutHost {
  * Parses and serializes the format of the authMechanismProperties or
  * readPreferenceTags connection string parameters.
  */
-export class CommaAndColonSeparatedRecord<K extends Record<string, unknown> = Record<string, unknown>> extends CaseInsensitiveMap<keyof K & string> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export class CommaAndColonSeparatedRecord<K extends {} = Record<string, unknown>> extends CaseInsensitiveMap<keyof K & string> {
   constructor(from?: string | null) {
     super();
     for (const entry of (from ?? '').split(',')) {

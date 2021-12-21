@@ -208,6 +208,7 @@ export default class ConnectionString extends URLWithoutHost {
     return redactValidConnectionString(this, options);
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   typedSearchParams<T extends Record<string, unknown>>() {
     const sametype = (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
     return this.searchParams as unknown as typeof sametype;

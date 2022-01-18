@@ -84,6 +84,20 @@ describe('ConnectionString', () => {
     }
   });
 
+  context('with an invalid schema on URI', () => {
+    it('throws an error mentioning the invalid schema', () => {
+      try {
+        // eslint-disable-next-line no-new
+        new ConnectionString('totallynotamongodb://outerspace');
+      } catch (err) {
+        expect((err as Error).message).to.equal('Invalid schema, expected connection string to start with `mongodb://` or `mongodb+srv://`');
+        expect((err as Error).name).to.equal('MongoParseError');
+        return;
+      }
+      expect.fail('missed exception');
+    });
+  });
+
   context('with invalid URIs', () => {
     for (const uri of [
       '',

@@ -126,7 +126,7 @@ export default class ConnectionString extends URLWithoutHost {
   // eslint-disable-next-line complexity
   constructor(uri: string) {
     if (!connectionStringHasValidScheme(uri)) {
-      throw new MongoParseError('Invalid schema, expected connection string to start with `mongodb://` or `mongodb+srv://`');
+      throw new MongoParseError('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
     }
 
     const match = uri.match(HOSTS_REGEX);

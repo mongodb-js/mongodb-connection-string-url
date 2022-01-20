@@ -8,6 +8,13 @@ export { redactConnectionString, ConnectionStringRedactionOptions };
 
 const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 
+function connectionStringHasValidScheme(connectionString: string) {
+  return (
+    connectionString.startsWith('mongodb://') ||
+    connectionString.startsWith('mongodb+srv://')
+  );
+}
+
 // Adapted from the Node.js driver code:
 // https://github.com/mongodb/node-mongodb-native/blob/350d14fde5b24480403313cfe5044f6e4b25f6c9/src/connection_string.ts#L146-L206
 const HOSTS_REGEX = new RegExp(
@@ -118,6 +125,10 @@ export default class ConnectionString extends URLWithoutHost {
 
   // eslint-disable-next-line complexity
   constructor(uri: string) {
+    if (!connectionStringHasValidScheme(uri)) {
+      throw new MongoParseError('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
+    }
+
     const match = uri.match(HOSTS_REGEX);
     if (!match) {
       throw new MongoParseError(`Invalid connection string "${uri}"`);

@@ -221,7 +221,9 @@ export class ConnectionString extends URLWithoutHost {
   }
 
   clone(): ConnectionString {
-    return new ConnectionString(this.toString());
+    return new ConnectionString(this.toString(), {
+      looseValidation: true
+    });
   }
 
   redact(options?: ConnectionStringRedactionOptions): ConnectionString {

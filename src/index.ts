@@ -17,9 +17,8 @@ function connectionStringHasValidScheme(connectionString: string) {
 
 // Adapted from the Node.js driver code:
 // https://github.com/mongodb/node-mongodb-native/blob/350d14fde5b24480403313cfe5044f6e4b25f6c9/src/connection_string.ts#L146-L206
-const HOSTS_REGEX = new RegExp(
-  String.raw`^(?<protocol>mongodb(?:\+srv|)):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^\/?@]*)(?<rest>.*)`
-);
+const HOSTS_REGEX =
+  /^(?<protocol>[^/]+):\/\/(?:(?<username>[^:]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^/?@]*)(?<rest>.*)/;
 
 class CaseInsensitiveMap<K extends string = string> extends Map<K, string> {
   delete(name: K): boolean {
@@ -116,16 +115,21 @@ class MongoParseError extends Error {
   }
 }
 
+export interface ConnectionStringParsingOptions {
+  looseValidation?: boolean;
+}
+
 /**
  * Represents a mongodb:// or mongodb+srv:// connection string.
  * See: https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.rst#reference-implementation
  */
-export default class ConnectionString extends URLWithoutHost {
+export class ConnectionString extends URLWithoutHost {
   _hosts: string[];
 
   // eslint-disable-next-line complexity
-  constructor(uri: string) {
-    if (!connectionStringHasValidScheme(uri)) {
+  constructor(uri: string, options: ConnectionStringParsingOptions = {}) {
+    const { looseValidation } = options;
+    if (!looseValidation && !connectionStringHasValidScheme(uri)) {
       throw new MongoParseError('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
     }
 
@@ -136,31 +140,33 @@ export default class ConnectionString extends URLWithoutHost {
 
     const { protocol, username, password, hosts, rest } = match.groups ?? {};
 
-    if (!protocol || !hosts) {
-      throw new MongoParseError(`Protocol and host list are required in "${uri}"`);
-    }
-
-    try {
-      decodeURIComponent(username ?? '');
-      decodeURIComponent(password ?? '');
-    } catch (err) {
-      throw new MongoParseError((err as Error).message);
-    }
-
-    // characters not permitted in username nor password Set([':', '/', '?', '#', '[', ']', '@'])
-    const illegalCharacters = new RegExp(String.raw`[:/?#\[\]@]`, 'gi');
-    if (username?.match(illegalCharacters)) {
-      throw new MongoParseError(`Username contains unescaped characters ${username}`);
-    }
-    if (!username || !password) {
-      const uriWithoutProtocol = uri.replace(`${protocol}://`, '');
-      if (uriWithoutProtocol.startsWith('@') || uriWithoutProtocol.startsWith(':')) {
-        throw new MongoParseError('URI contained empty userinfo section');
+    if (!looseValidation) {
+      if (!protocol || !hosts) {
+        throw new MongoParseError(`Protocol and host list are required in "${uri}"`);
       }
-    }
 
-    if (password?.match(illegalCharacters)) {
-      throw new MongoParseError('Password contains unescaped characters');
+      try {
+        decodeURIComponent(username ?? '');
+        decodeURIComponent(password ?? '');
+      } catch (err) {
+        throw new MongoParseError((err as Error).message);
+      }
+
+      // characters not permitted in username nor password Set([':', '/', '?', '#', '[', ']', '@'])
+      const illegalCharacters = /[:/?#[\]@]/gi;
+      if (username?.match(illegalCharacters)) {
+        throw new MongoParseError(`Username contains unescaped characters ${username}`);
+      }
+      if (!username || !password) {
+        const uriWithoutProtocol = uri.replace(`${protocol}://`, '');
+        if (uriWithoutProtocol.startsWith('@') || uriWithoutProtocol.startsWith(':')) {
+          throw new MongoParseError('URI contained empty userinfo section');
+        }
+      }
+
+      if (password?.match(illegalCharacters)) {
+        throw new MongoParseError('Password contains unescaped characters');
+      }
     }
 
     let authString = '';
@@ -171,12 +177,15 @@ export default class ConnectionString extends URLWithoutHost {
     super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
     this._hosts = hosts.split(',');
 
-    if (this.isSRV && this.hosts.length !== 1) {
-      throw new MongoParseError('mongodb+srv URI cannot have multiple service names');
+    if (!looseValidation) {
+      if (this.isSRV && this.hosts.length !== 1) {
+        throw new MongoParseError('mongodb+srv URI cannot have multiple service names');
+      }
+      if (this.isSRV && this.hosts.some(host => host.includes(':'))) {
+        throw new MongoParseError('mongodb+srv URI cannot have port number');
+      }
     }
-    if (this.isSRV && this.hosts.some(host => host.includes(':'))) {
-      throw new MongoParseError('mongodb+srv URI cannot have port number');
-    }
+
     if (!this.pathname) {
       this.pathname = '/';
     }
@@ -255,3 +264,5 @@ export class CommaAndColonSeparatedRecord<K extends {} = Record<string, unknown>
     return [...this].map(entry => entry.join(':')).join(',');
   }
 }
+
+export default ConnectionString;

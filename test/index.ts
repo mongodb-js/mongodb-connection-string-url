@@ -182,6 +182,16 @@ describe('ConnectionString', () => {
       expect(() => { cs.href = 'mongodb://localhost'; }).to.throw(Error);
     });
   });
+
+  context('with loose validation', () => {
+    it('allows odd connection strings', () => {
+      const cs: any = new ConnectionString('mongodb://:password@x', { looseValidation: true });
+      expect(cs.username).to.equal('');
+      expect(cs.password).to.equal('password');
+      expect(cs.port).to.equal('');
+      expect(cs.href).to.equal('mongodb://:password@x/');
+    });
+  });
 });
 
 describe('CommaAndColonSeparatedRecord', () => {

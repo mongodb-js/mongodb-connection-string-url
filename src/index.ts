@@ -174,7 +174,23 @@ export class ConnectionString extends URLWithoutHost {
     if (typeof password === 'string') authString += `:${password}`;
     if (authString) authString += '@';
 
-    super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
+    try {
+      super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
+    } catch (err: any) {
+      if (looseValidation) {
+        // Call the constructor again, this time with loose validation off,
+        // for a better error message
+        // eslint-disable-next-line no-new
+        new ConnectionString(uri, {
+          ...options,
+          looseValidation: false
+        });
+      }
+      if (typeof err.message === 'string') {
+        err.message = err.message.replace(DUMMY_HOSTNAME, hosts);
+      }
+      throw err;
+    }
     this._hosts = hosts.split(',');
 
     if (!looseValidation) {

@@ -191,6 +191,16 @@ describe('ConnectionString', () => {
       expect(cs.port).to.equal('');
       expect(cs.href).to.equal('mongodb://:password@x/');
     });
+
+    it('throws good error messages for invalid URLs', () => {
+      try {
+        // eslint-disable-next-line no-new
+        new ConnectionString('-://:password@x', { looseValidation: true });
+        expect.fail('missed exception');
+      } catch (err: any) {
+        expect(err.message).to.equal('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
+      }
+    });
   });
 });
 

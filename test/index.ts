@@ -73,6 +73,20 @@ describe('ConnectionString', () => {
           isSRV: false,
           hosts: ['localhost:12345', 'anotherHost']
         }
+      },
+      {
+        uri: 'mongodb://database-meow@database-haha.mongo.blah.blah.com:8888/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@database-haha@',
+        match: {
+          href: 'mongodb://database-meow@database-haha.mongo.blah.blah.com:8888/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@database-haha@',
+          protocol: 'mongodb:',
+          username: 'database-meow',
+          password: '',
+          pathname: '/',
+          search: '?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@database-haha@',
+          hash: '',
+          isSRV: false,
+          hosts: ['database-haha.mongo.blah.blah.com:8888']
+        }
       }
     ]) {
       it(`parses ${uri} correctly`, () => {

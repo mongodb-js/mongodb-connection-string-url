@@ -7,6 +7,7 @@ import {
 export { redactConnectionString, ConnectionStringRedactionOptions };
 
 const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
+const fixupStringificationResult = Symbol('fixupStringificationResult');
 
 function connectionStringHasValidScheme(connectionString: string) {
   return (
@@ -217,7 +218,9 @@ export class ConnectionString extends URLWithoutHost {
   set hostname(_ignored: never) { throw new Error('No single host for connection string'); }
   get port(): never { return '' as never; }
   set port(_ignored: never) { throw new Error('No single host for connection string'); }
-  get href(): string { return this.toString(); }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore-error super.href is perfectly valid to access here
+  get href(): string { return this[fixupStringificationResult](super.href); }
   set href(_ignored: string) { throw new Error('Cannot set href for connection strings'); }
 
   get isSRV(): boolean {
@@ -233,7 +236,7 @@ export class ConnectionString extends URLWithoutHost {
   }
 
   toString(): string {
-    return super.toString().replace(DUMMY_HOSTNAME, this.hosts.join(','));
+    return this[fixupStringificationResult](super.toString());
   }
 
   clone(): ConnectionString {
@@ -255,6 +258,19 @@ export class ConnectionString extends URLWithoutHost {
   [Symbol.for('nodejs.util.inspect.custom')](): any {
     const { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash } = this;
     return { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash };
+  }
+
+  [fixupStringificationResult](str: string): string {
+    // Originally, this was part of .toString(), and .href called .toString().
+    // That should be fine for the current whatwg-url implementation, however,
+    // it appears that in some unclear situations URL.prototype.toString()
+    // can be overridden(?) to be implemented in terms of .href(), leading
+    // to a circular dependency. Consequently, implement .toString() through
+    // super.toString() and href through super.href, and extract the shared
+    // fixup code here.
+    // See https://github.com/mongodb-js/mongodb-connection-string-url/issues/10
+    // for more details.
+    return str.replace(DUMMY_HOSTNAME, this.hosts.join(','));
   }
 }
 

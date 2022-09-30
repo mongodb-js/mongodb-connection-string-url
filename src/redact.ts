@@ -54,22 +54,23 @@ export function redactConnectionString(
     return parsed.redact(options).toString().replace(/___credentials___/g, replacementString);
   }
 
-  const regexes: (RegExp | null)[] = [
+  // Note: The regexes here used to use lookbehind assertions, but we dropped that since
+  // we need to support older browsers here.
+  const R = replacementString; // alias for conciseness
+  const replacements: ((uri: string) => string)[] = [
     // Username and password
-    redactUsernames ? /(?<=\/\/)(.*)(?=@)/g : /(?<=\/\/[^@]+:)(.*)(?=@)/g,
+    uri => uri.replace(redactUsernames ? /(\/\/)(.*)(@)/g : /(\/\/[^@]+:)(.*)(@)/g, `$1${R}$3`),
     // AWS IAM Session Token as part of query parameter
-    /(?<=AWS_SESSION_TOKEN(:|%3A))([^,&]+)/gi,
+    uri => uri.replace(/(AWS_SESSION_TOKEN(:|%3A))([^,&]+)/gi, `$1${R}`),
     // tlsCertificateKeyFilePassword query parameter
-    /(?<=tlsCertificateKeyFilePassword=)([^&]+)/gi,
+    uri => uri.replace(/(tlsCertificateKeyFilePassword=)([^&]+)/gi, `$1${R}`),
     // proxyUsername query parameter
-    redactUsernames ? /(?<=proxyUsername=)([^&]+)/gi : null,
+    uri => redactUsernames ? uri.replace(/(proxyUsername=)([^&]+)/gi, `$1${R}`) : uri,
     // proxyPassword query parameter
-    /(?<=proxyPassword=)([^&]+)/gi
+    uri => uri.replace(/(proxyPassword=)([^&]+)/gi, `$1${R}`)
   ];
-  for (const r of regexes) {
-    if (r !== null) {
-      uri = uri.replace(r, replacementString);
-    }
+  for (const replacer of replacements) {
+    uri = replacer(uri);
   }
   return uri;
 }

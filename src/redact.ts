@@ -59,7 +59,7 @@ export function redactConnectionString(
   const R = replacementString; // alias for conciseness
   const replacements: ((uri: string) => string)[] = [
     // Username and password
-    uri => uri.replace(redactUsernames ? /(\/\/)(.*)(@)/g : /(\/\/[^@]+:)(.*)(@)/g, `$1${R}$3`),
+    uri => uri.replace(redactUsernames ? /(\/\/)(.*)(@)/g : /(\/\/[^@]*:)(.*)(@)/g, `$1${R}$3`),
     // AWS IAM Session Token as part of query parameter
     uri => uri.replace(/(AWS_SESSION_TOKEN(:|%3A))([^,&]+)/gi, `$1${R}`),
     // tlsCertificateKeyFilePassword query parameter

@@ -43,6 +43,12 @@ describe('redact credentials', () => {
         expect(redactConnectionString(`${protocol}://admin:tscat3ca1s@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=foo&proxyPassword=bar`, { replacementString: '****' }))
           .to.equal(`${protocol}://****@cats-data-sets-e08dy.mongodb.net/admin?proxyUsername=****&proxyPassword=****`);
       });
+
+      it('redacts credentials when username is empty', () => {
+        expect(
+          redactConnectionString(`${protocol}://:password@mongodb.net/`)
+        ).to.equal(`${protocol}://<credentials>@mongodb.net/`);
+      });
     });
 
     context('when url contains no credentials', () => {

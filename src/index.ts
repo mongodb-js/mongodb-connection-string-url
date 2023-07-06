@@ -167,6 +167,10 @@ export class ConnectionString extends URLWithoutHost {
       if (password?.match(illegalCharacters)) {
         throw new MongoParseError('Password contains unescaped characters');
       }
+
+      if (rest[0] !== '/' && rest.length > 0) {
+        throw new MongoParseError('Missing delimiting slash between hosts and options');
+      }
     }
 
     let authString = '';

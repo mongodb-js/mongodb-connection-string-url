@@ -32,17 +32,15 @@ const history = currentHistorySectionLines.slice(1).join('\n').trim();
 
 const releaseNotes = `${header}
 
-The MongoDB Node.js team is pleased to announce version ${version.version} of the \`mongodb\` package!
+The MongoDB Node.js team is pleased to announce version ${version.version} of the \`mongodb-connection-string-url\` package!
 
 ${highlights}
 ${history}
 ## Documentation
 
-* [Reference](https://docs.mongodb.com/drivers/node/current/)
-* [API](https://mongodb.github.io/node-mongodb-native/${version.major}.${version.minor}/)
-* [Changelog](https://github.com/mongodb/node-mongodb-native/blob/v${version.version}/HISTORY.md)
+* [Changelog](https://github.com/mongodb-js/-connection-string-url/blob/v${version.version}/HISTORY.md)
 
-We invite you to try the \`mongodb\` library immediately, and report any issues to the [NODE project](https://jira.mongodb.org/projects/NODE).
+We invite you to try the \`mongodb-connection-string-url\` library immediately, and report any issues to the [NODE project](https://jira.mongodb.org/projects/NODE).
 `;
 
 const releaseNotesPath = path.join(process.cwd(), 'release_notes.md');

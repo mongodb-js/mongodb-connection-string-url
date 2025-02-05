@@ -7,7 +7,6 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: 'lts/*'
-        cache: 'npm'
         registry-url: 'https://registry.npmjs.org'
     - run: npm install -g npm@latest
       shell: bash

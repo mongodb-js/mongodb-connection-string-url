@@ -4,3 +4,4 @@ dist
 coverage
 .esm-wrapper.mjs
 lib/
+package-lock.json

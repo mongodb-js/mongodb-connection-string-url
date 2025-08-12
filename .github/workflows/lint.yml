@@ -1,7 +1,9 @@
 on: [push, pull_request]
 
 name: CI
-
+permissions:
+  contents: read
+  
 jobs:
   test:
     name: Lint

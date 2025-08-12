@@ -22,6 +22,8 @@ updates:
         versions: [">=16.0.0"]
       # we ignore TS as a part of quarterly dependency updates.
       - dependency-name: "typescript"
+      - dependency-name: "@types/node"
+        versions: [">=24.0.0"]
     groups:
       development-dependencies:
         dependency-type: "development"

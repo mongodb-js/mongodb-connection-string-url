@@ -1,19 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { URL, URLSearchParams } from "whatwg-url";
+import { URL, URLSearchParams } from 'whatwg-url';
 import {
   redactValidConnectionString,
   redactConnectionString,
-  ConnectionStringRedactionOptions,
-} from "./redact";
+  ConnectionStringRedactionOptions
+} from './redact';
 export { redactConnectionString, ConnectionStringRedactionOptions };
 
-const DUMMY_HOSTNAME = "__this_is_a_placeholder__";
+const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 
 function connectionStringHasValidScheme(connectionString: string) {
-  return (
-    connectionString.startsWith("mongodb://") ||
-    connectionString.startsWith("mongodb+srv://")
-  );
+  return connectionString.startsWith('mongodb://') || connectionString.startsWith('mongodb+srv://');
 }
 
 // Adapted from the Node.js driver code:
@@ -50,9 +47,7 @@ class CaseInsensitiveMap<K extends string = string> extends Map<K, string> {
   }
 }
 
-function caseInsenstiveURLSearchParams<K extends string = string>(
-  Ctor: typeof URLSearchParams,
-) {
+function caseInsenstiveURLSearchParams<K extends string = string>(Ctor: typeof URLSearchParams) {
   return class CaseInsenstiveURLSearchParams extends Ctor {
     append(name: K, value: any): void {
       return super.append(this._normalizeKey(name), value);
@@ -114,7 +109,7 @@ abstract class URLWithoutHost extends URL {
 
 class MongoParseError extends Error {
   get name(): string {
-    return "MongoParseError";
+    return 'MongoParseError';
   }
 }
 
@@ -134,7 +129,7 @@ export class ConnectionString extends URLWithoutHost {
     const { looseValidation } = options;
     if (!looseValidation && !connectionStringHasValidScheme(uri)) {
       throw new MongoParseError(
-        'Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"',
+        'Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"'
       );
     }
 
@@ -147,14 +142,12 @@ export class ConnectionString extends URLWithoutHost {
 
     if (!looseValidation) {
       if (!protocol || !hosts) {
-        throw new MongoParseError(
-          `Protocol and host list are required in "${uri}"`,
-        );
+        throw new MongoParseError(`Protocol and host list are required in "${uri}"`);
       }
 
       try {
-        decodeURIComponent(username ?? "");
-        decodeURIComponent(password ?? "");
+        decodeURIComponent(username ?? '');
+        decodeURIComponent(password ?? '');
       } catch (err) {
         throw new MongoParseError((err as Error).message);
       }
@@ -162,34 +155,27 @@ export class ConnectionString extends URLWithoutHost {
       // characters not permitted in username nor password Set([':', '/', '?', '#', '[', ']', '@'])
       const illegalCharacters = /[:/?#[\]@]/gi;
       if (username?.match(illegalCharacters)) {
-        throw new MongoParseError(
-          `Username contains unescaped characters ${username}`,
-        );
+        throw new MongoParseError(`Username contains unescaped characters ${username}`);
       }
       if (!username || !password) {
-        const uriWithoutProtocol = uri.replace(`${protocol}://`, "");
-        if (
-          uriWithoutProtocol.startsWith("@") ||
-          uriWithoutProtocol.startsWith(":")
-        ) {
-          throw new MongoParseError("URI contained empty userinfo section");
+        const uriWithoutProtocol = uri.replace(`${protocol}://`, '');
+        if (uriWithoutProtocol.startsWith('@') || uriWithoutProtocol.startsWith(':')) {
+          throw new MongoParseError('URI contained empty userinfo section');
         }
       }
 
       if (password?.match(illegalCharacters)) {
-        throw new MongoParseError("Password contains unescaped characters");
+        throw new MongoParseError('Password contains unescaped characters');
       }
     }
 
-    let authString = "";
-    if (typeof username === "string") authString += username;
-    if (typeof password === "string") authString += `:${password}`;
-    if (authString) authString += "@";
+    let authString = '';
+    if (typeof username === 'string') authString += username;
+    if (typeof password === 'string') authString += `:${password}`;
+    if (authString) authString += '@';
 
     try {
-      super(
-        `${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`,
-      );
+      super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
     } catch (err: any) {
       if (looseValidation) {
         // Call the constructor again, this time with loose validation off,
@@ -197,34 +183,31 @@ export class ConnectionString extends URLWithoutHost {
         // eslint-disable-next-line no-new
         new ConnectionString(uri, {
           ...options,
-          looseValidation: false,
+          looseValidation: false
         });
       }
-      if (typeof err.message === "string") {
+      if (typeof err.message === 'string') {
         err.message = err.message.replace(DUMMY_HOSTNAME, hosts);
       }
       throw err;
     }
-    this._hosts = hosts.split(",");
+    this._hosts = hosts.split(',');
 
     if (!looseValidation) {
       if (this.isSRV && this.hosts.length !== 1) {
-        throw new MongoParseError(
-          "mongodb+srv URI cannot have multiple service names",
-        );
+        throw new MongoParseError('mongodb+srv URI cannot have multiple service names');
       }
-      if (this.isSRV && this.hosts.some((host) => host.includes(":"))) {
-        throw new MongoParseError("mongodb+srv URI cannot have port number");
+      if (this.isSRV && this.hosts.some(host => host.includes(':'))) {
+        throw new MongoParseError('mongodb+srv URI cannot have port number');
       }
     }
 
     if (!this.pathname) {
-      this.pathname = "/";
+      this.pathname = '/';
     }
     Object.setPrototypeOf(
       this.searchParams,
-      caseInsenstiveURLSearchParams(this.searchParams.constructor as any)
-        .prototype,
+      caseInsenstiveURLSearchParams(this.searchParams.constructor as any).prototype
     );
   }
 
@@ -235,29 +218,29 @@ export class ConnectionString extends URLWithoutHost {
     return DUMMY_HOSTNAME as never;
   }
   set host(_ignored: never) {
-    throw new Error("No single host for connection string");
+    throw new Error('No single host for connection string');
   }
   get hostname(): never {
     return DUMMY_HOSTNAME as never;
   }
   set hostname(_ignored: never) {
-    throw new Error("No single host for connection string");
+    throw new Error('No single host for connection string');
   }
   get port(): never {
-    return "" as never;
+    return '' as never;
   }
   set port(_ignored: never) {
-    throw new Error("No single host for connection string");
+    throw new Error('No single host for connection string');
   }
   get href(): string {
     return this.toString();
   }
   set href(_ignored: string) {
-    throw new Error("Cannot set href for connection strings");
+    throw new Error('Cannot set href for connection strings');
   }
 
   get isSRV(): boolean {
-    return this.protocol.includes("srv");
+    return this.protocol.includes('srv');
   }
 
   get hosts(): string[] {
@@ -269,12 +252,12 @@ export class ConnectionString extends URLWithoutHost {
   }
 
   toString(): string {
-    return super.toString().replace(DUMMY_HOSTNAME, this.hosts.join(","));
+    return super.toString().replace(DUMMY_HOSTNAME, this.hosts.join(','));
   }
 
   clone(): ConnectionString {
     return new ConnectionString(this.toString(), {
-      looseValidation: true,
+      looseValidation: true
     });
   }
 
@@ -284,12 +267,11 @@ export class ConnectionString extends URLWithoutHost {
 
   typedSearchParams<T extends Record<string, any>>() {
     const _sametype =
-      (false as true) &&
-      new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
+      (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
     return this.searchParams as unknown as typeof _sametype;
   }
 
-  [Symbol.for("nodejs.util.inspect.custom")](): any {
+  [Symbol.for('nodejs.util.inspect.custom')](): any {
     const {
       href,
       origin,
@@ -300,7 +282,7 @@ export class ConnectionString extends URLWithoutHost {
       pathname,
       search,
       searchParams,
-      hash,
+      hash
     } = this;
     return {
       href,
@@ -312,7 +294,7 @@ export class ConnectionString extends URLWithoutHost {
       pathname,
       search,
       searchParams,
-      hash,
+      hash
     };
   }
 }
@@ -322,27 +304,24 @@ export class ConnectionString extends URLWithoutHost {
  * readPreferenceTags connection string parameters.
  */
 export class CommaAndColonSeparatedRecord<
-  K extends Record<string, unknown> = Record<string, unknown>,
+  K extends Record<string, unknown> = Record<string, unknown>
 > extends CaseInsensitiveMap<keyof K & string> {
   constructor(from?: string | null) {
     super();
-    for (const entry of (from ?? "").split(",")) {
+    for (const entry of (from ?? '').split(',')) {
       if (!entry) continue;
-      const colonIndex = entry.indexOf(":");
+      const colonIndex = entry.indexOf(':');
       // Use .set() to properly account for case insensitivity
       if (colonIndex === -1) {
-        this.set(entry as keyof K & string, "");
+        this.set(entry as keyof K & string, '');
       } else {
-        this.set(
-          entry.slice(0, colonIndex) as keyof K & string,
-          entry.slice(colonIndex + 1),
-        );
+        this.set(entry.slice(0, colonIndex) as keyof K & string, entry.slice(colonIndex + 1));
       }
     }
   }
 
   toString(): string {
-    return [...this].map((entry) => entry.join(":")).join(",");
+    return [...this].map(entry => entry.join(':')).join(',');
   }
 }
 

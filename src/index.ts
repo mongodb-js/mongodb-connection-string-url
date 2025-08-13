@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { URL, URLSearchParams } from 'whatwg-url';
 import {
   redactValidConnectionString,
@@ -9,10 +10,7 @@ export { redactConnectionString, ConnectionStringRedactionOptions };
 const DUMMY_HOSTNAME = '__this_is_a_placeholder__';
 
 function connectionStringHasValidScheme(connectionString: string) {
-  return (
-    connectionString.startsWith('mongodb://') ||
-    connectionString.startsWith('mongodb+srv://')
-  );
+  return connectionString.startsWith('mongodb://') || connectionString.startsWith('mongodb+srv://');
 }
 
 // Adapted from the Node.js driver code:
@@ -130,7 +128,9 @@ export class ConnectionString extends URLWithoutHost {
   constructor(uri: string, options: ConnectionStringParsingOptions = {}) {
     const { looseValidation } = options;
     if (!looseValidation && !connectionStringHasValidScheme(uri)) {
-      throw new MongoParseError('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
+      throw new MongoParseError(
+        'Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"'
+      );
     }
 
     const match = uri.match(HOSTS_REGEX);
@@ -205,20 +205,39 @@ export class ConnectionString extends URLWithoutHost {
     if (!this.pathname) {
       this.pathname = '/';
     }
-    Object.setPrototypeOf(this.searchParams, caseInsenstiveURLSearchParams(this.searchParams.constructor as any).prototype);
+    Object.setPrototypeOf(
+      this.searchParams,
+      caseInsenstiveURLSearchParams(this.searchParams.constructor as any).prototype
+    );
   }
 
   // The getters here should throw, but that would break .toString() because of
   // https://github.com/nodejs/node/issues/36887. Using 'never' as the type
   // should be enough to stop anybody from using them in TypeScript, though.
-  get host(): never { return DUMMY_HOSTNAME as never; }
-  set host(_ignored: never) { throw new Error('No single host for connection string'); }
-  get hostname(): never { return DUMMY_HOSTNAME as never; }
-  set hostname(_ignored: never) { throw new Error('No single host for connection string'); }
-  get port(): never { return '' as never; }
-  set port(_ignored: never) { throw new Error('No single host for connection string'); }
-  get href(): string { return this.toString(); }
-  set href(_ignored: string) { throw new Error('Cannot set href for connection strings'); }
+  get host(): never {
+    return DUMMY_HOSTNAME as never;
+  }
+  set host(_ignored: never) {
+    throw new Error('No single host for connection string');
+  }
+  get hostname(): never {
+    return DUMMY_HOSTNAME as never;
+  }
+  set hostname(_ignored: never) {
+    throw new Error('No single host for connection string');
+  }
+  get port(): never {
+    return '' as never;
+  }
+  set port(_ignored: never) {
+    throw new Error('No single host for connection string');
+  }
+  get href(): string {
+    return this.toString();
+  }
+  set href(_ignored: string) {
+    throw new Error('Cannot set href for connection strings');
+  }
 
   get isSRV(): boolean {
     return this.protocol.includes('srv');
@@ -246,15 +265,37 @@ export class ConnectionString extends URLWithoutHost {
     return redactValidConnectionString(this, options);
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/ban-types
-  typedSearchParams<T extends {}>() {
-    const sametype = (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
-    return this.searchParams as unknown as typeof sametype;
+  typedSearchParams<T extends Record<string, any>>() {
+    const _sametype =
+      (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
+    return this.searchParams as unknown as typeof _sametype;
   }
 
   [Symbol.for('nodejs.util.inspect.custom')](): any {
-    const { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash } = this;
-    return { href, origin, protocol, username, password, hosts, pathname, search, searchParams, hash };
+    const {
+      href,
+      origin,
+      protocol,
+      username,
+      password,
+      hosts,
+      pathname,
+      search,
+      searchParams,
+      hash
+    } = this;
+    return {
+      href,
+      origin,
+      protocol,
+      username,
+      password,
+      hosts,
+      pathname,
+      search,
+      searchParams,
+      hash
+    };
   }
 }
 
@@ -262,8 +303,9 @@ export class ConnectionString extends URLWithoutHost {
  * Parses and serializes the format of the authMechanismProperties or
  * readPreferenceTags connection string parameters.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export class CommaAndColonSeparatedRecord<K extends {} = Record<string, unknown>> extends CaseInsensitiveMap<keyof K & string> {
+export class CommaAndColonSeparatedRecord<
+  K extends Record<string, unknown> = Record<string, unknown>
+> extends CaseInsensitiveMap<keyof K & string> {
   constructor(from?: string | null) {
     super();
     for (const entry of (from ?? '').split(',')) {
@@ -271,9 +313,9 @@ export class CommaAndColonSeparatedRecord<K extends {} = Record<string, unknown>
       const colonIndex = entry.indexOf(':');
       // Use .set() to properly account for case insensitivity
       if (colonIndex === -1) {
-        this.set(entry as (keyof K & string), '');
+        this.set(entry as keyof K & string, '');
       } else {
-        this.set(entry.slice(0, colonIndex) as (keyof K & string), entry.slice(colonIndex + 1));
+        this.set(entry.slice(0, colonIndex) as keyof K & string, entry.slice(colonIndex + 1));
       }
     }
   }

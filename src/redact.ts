@@ -7,7 +7,8 @@ export interface ConnectionStringRedactionOptions {
 
 export function redactValidConnectionString(
   inputUrl: Readonly<ConnectionString>,
-  options?: ConnectionStringRedactionOptions): ConnectionString {
+  options?: ConnectionStringRedactionOptions
+): ConnectionString {
   const url = inputUrl.clone();
   const replacementString = options?.replacementString ?? '_credentials_';
   const redactUsernames = options?.redactUsernames ?? true;
@@ -39,19 +40,25 @@ export function redactValidConnectionString(
 
 export function redactConnectionString(
   uri: string,
-  options?: ConnectionStringRedactionOptions): string {
+  options?: ConnectionStringRedactionOptions
+): string {
   const replacementString = options?.replacementString ?? '<credentials>';
   const redactUsernames = options?.redactUsernames ?? true;
 
   let parsed: ConnectionString | undefined;
   try {
     parsed = new ConnectionString(uri);
-  } catch {}
+  } catch {
+    // squash errors
+  }
   if (parsed) {
     // If we can parse the connection string, use the more precise
     // redaction logic.
     options = { ...options, replacementString: '___credentials___' };
-    return parsed.redact(options).toString().replace(/___credentials___/g, replacementString);
+    return parsed
+      .redact(options)
+      .toString()
+      .replace(/___credentials___/g, replacementString);
   }
 
   // Note: The regexes here used to use lookbehind assertions, but we dropped that since
@@ -65,7 +72,7 @@ export function redactConnectionString(
     // tlsCertificateKeyFilePassword query parameter
     uri => uri.replace(/(tlsCertificateKeyFilePassword=)([^&]+)/gi, `$1${R}`),
     // proxyUsername query parameter
-    uri => redactUsernames ? uri.replace(/(proxyUsername=)([^&]+)/gi, `$1${R}`) : uri,
+    uri => (redactUsernames ? uri.replace(/(proxyUsername=)([^&]+)/gi, `$1${R}`) : uri),
     // proxyPassword query parameter
     uri => uri.replace(/(proxyPassword=)([^&]+)/gi, `$1${R}`)
   ];

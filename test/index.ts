@@ -82,7 +82,8 @@ describe('ConnectionString', () => {
           username: 'database-meow',
           password: '',
           pathname: '/',
-          search: '?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@database-haha@',
+          search:
+            '?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@database-haha@',
           hash: '',
           isSRV: false,
           hosts: ['database-haha.mongo.blah.blah.com:8888']
@@ -104,7 +105,9 @@ describe('ConnectionString', () => {
         // eslint-disable-next-line no-new
         new ConnectionString('totallynotamongodb://outerspace');
       } catch (err) {
-        expect((err as Error).message).to.equal('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
+        expect((err as Error).message).to.equal(
+          'Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"'
+        );
         expect((err as Error).name).to.equal('MongoParseError');
         return;
       }
@@ -163,7 +166,9 @@ describe('ConnectionString', () => {
       cs.searchParams.set('serverSelectionTimeoutMS', '200');
       cs.searchParams.append('serverSelectionTimeoutMS', '300');
 
-      expect(cs.toString()).to.equal('mongodb://localhost/?SERVERSELECTIONTIMEOUTMS=200&SERVERSELECTIONTIMEOUTMS=300');
+      expect(cs.toString()).to.equal(
+        'mongodb://localhost/?SERVERSELECTIONTIMEOUTMS=200&SERVERSELECTIONTIMEOUTMS=300'
+      );
       expect(cs.searchParams.has('serverSelectionTimeoutMS')).to.equal(true);
       expect(cs.searchParams.has('SERVERSELECTIONTIMEOUTMS')).to.equal(true);
       expect(cs.searchParams.get('serverSelectionTimeoutMS')).to.equal('200');
@@ -185,21 +190,33 @@ describe('ConnectionString', () => {
 
   context('URL methods that do not apply to connection strings as-is', () => {
     it('throws/returns dummy values', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cs: any = new ConnectionString('mongodb://localhost');
       expect(cs.host).not.to.equal('localhost');
       expect(cs.hostname).not.to.equal('localhost');
       expect(cs.port).to.equal('');
       expect(cs.href).to.equal('mongodb://localhost/');
-      expect(() => { cs.host = 'abc'; }).to.throw(Error);
-      expect(() => { cs.hostname = 'abc'; }).to.throw(Error);
-      expect(() => { cs.port = '1000'; }).to.throw(Error);
-      expect(() => { cs.href = 'mongodb://localhost'; }).to.throw(Error);
+      expect(() => {
+        cs.host = 'abc';
+      }).to.throw(Error);
+      expect(() => {
+        cs.hostname = 'abc';
+      }).to.throw(Error);
+      expect(() => {
+        cs.port = '1000';
+      }).to.throw(Error);
+      expect(() => {
+        cs.href = 'mongodb://localhost';
+      }).to.throw(Error);
     });
   });
 
   context('with loose validation', () => {
     it('allows odd connection strings', () => {
-      const cs: any = new ConnectionString('mongodb://:password@x', { looseValidation: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cs: any = new ConnectionString('mongodb://:password@x', {
+        looseValidation: true
+      });
       expect(cs.username).to.equal('');
       expect(cs.password).to.equal('password');
       expect(cs.port).to.equal('');
@@ -208,11 +225,13 @@ describe('ConnectionString', () => {
 
     it('throws good error messages for invalid URLs', () => {
       try {
-        // eslint-disable-next-line no-new
         new ConnectionString('-://:password@x', { looseValidation: true });
         expect.fail('missed exception');
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        expect(err.message).to.equal('Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"');
+        expect(err.message).to.equal(
+          'Invalid scheme, expected connection string to start with "mongodb://" or "mongodb+srv://"'
+        );
       }
     });
   });

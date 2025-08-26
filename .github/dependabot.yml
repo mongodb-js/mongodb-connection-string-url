@@ -25,6 +25,12 @@ updates:
       - dependency-name: "@types/node"
         versions: [">=24.0.0"]
     groups:
+      prod-dependencies:
+        dependency-type: "production"
+        applies-to: version-updates
+        update-types:
+        - "minor"
+        - "patch"
       development-dependencies:
         dependency-type: "development"
         applies-to: version-updates

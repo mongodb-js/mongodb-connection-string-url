@@ -16,16 +16,9 @@
     "url": "https://github.com/mongodb-js/mongodb-connection-string-url/issues"
   },
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "exports": {
-    "require": {
-      "default": "./lib/index.js",
-      "types": "./lib/index.d.ts"
-    },
-    "import": {
-      "default": "./.esm-wrapper.mjs",
-      "types": "./lib/index.d.ts"
-    }
+    "require": "./lib/index.js",
+    "import": "./.esm-wrapper.mjs"
   },
   "files": [
     "LICENSE",

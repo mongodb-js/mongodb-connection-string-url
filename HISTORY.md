@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.3](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v3.0.2...v3.0.3) (2025-09-04)
+
+
+### Bug Fixes
+
+* update exports entry with type mappings for ESM consumers ([#91](https://github.com/mongodb-js/mongodb-connection-string-url/issues/91)) ([8d93166](https://github.com/mongodb-js/mongodb-connection-string-url/commit/8d9316674699bbd204b9d9b91a033d5b279cf4c7))
+
 ## [3.0.2](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v3.0.1...v3.0.2) (2025-01-14)
 
 

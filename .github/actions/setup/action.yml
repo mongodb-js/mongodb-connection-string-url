@@ -11,5 +11,5 @@ runs:
     - run: npm install -g npm@latest
       shell: bash
     # TODO(NODE-7058): use npm CI here once we have a package-lock.json again
-    - run: npm install
+    - run: npm install --ignore-scripts
       shell: bash

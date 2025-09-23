@@ -63,6 +63,9 @@
   },
   "dependencies": {
     "@types/whatwg-url": "^13.0.0",
-    "whatwg-url": "^14.1.0 || ^13.0.0"
+    "whatwg-url": "^14.1.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   }
 }

@@ -10,6 +10,5 @@ runs:
         registry-url: 'https://registry.npmjs.org'
     - run: npm install -g npm@latest
       shell: bash
-    # TODO(NODE-7058): use npm CI here once we have a package-lock.json again
-    - run: npm install --ignore-scripts
+    - run: npm ci
       shell: bash

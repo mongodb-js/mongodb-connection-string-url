@@ -12,7 +12,7 @@
     "es6": true
   },
   "parserOptions": {
-    "ecmaVersion": 2019
+    "ecmaVersion": 2023
   },
   "plugins": [
     "@typescript-eslint",
@@ -85,7 +85,7 @@
         "lib/*.js"
       ],
       "parserOptions": {
-        "ecmaVersion": 2019,
+        "ecmaVersion": 2023,
         "sourceType": "commonjs"
       }
     },

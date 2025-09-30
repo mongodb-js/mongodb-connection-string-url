@@ -17,9 +17,6 @@ updates:
       # chai is esmodule only.
       - dependency-name: "chai"
         versions: [">=5.0.0"]
-      # nyc is Node18+ only starting on nyc@16.x.
-      - dependency-name: "nyc"
-        versions: [">=16.0.0"]
       # we ignore TS as a part of quarterly dependency updates.
       - dependency-name: "typescript"
       - dependency-name: "@types/node"

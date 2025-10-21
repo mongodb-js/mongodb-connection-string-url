@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0-alpha](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v3.0.3...v4.0.0-alpha) (2025-10-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* **NODE-7058:** drop support for Node 16 and 18 ([#95](https://github.com/mongodb-js/mongodb-connection-string-url/issues/95))
+
+### Features
+
+* **NODE-7058:** drop support for Node 16 and 18 ([#95](https://github.com/mongodb-js/mongodb-connection-string-url/issues/95)) ([783c85b](https://github.com/mongodb-js/mongodb-connection-string-url/commit/783c85b5416410fc92c1121d60f8b95e822465a0))
+
 ## [3.0.3](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v3.0.2...v3.0.3) (2025-09-04)
 
 

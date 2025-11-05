@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.0](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v4.0.0-alpha...v7.0.0) (2025-11-05)
+
+
+### Tests
+
+* **NODE-7284:** add Nodejs 24 in test matrix ([#105](https://github.com/mongodb-js/mongodb-connection-string-url/issues/105)) ([2a3863e](https://github.com/mongodb-js/mongodb-connection-string-url/commit/2a3863eacd003e8f06022a79870ca5876efb2a17))
+
 ## [4.0.0-alpha](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v3.0.3...v4.0.0-alpha) (2025-10-21)
 
 

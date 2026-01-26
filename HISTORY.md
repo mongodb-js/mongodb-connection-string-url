@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.1](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v7.0.0...v7.0.1) (2026-01-26)
+
+
+### Miscellaneous Chores
+
+* **deps-dev:** bump js-yaml from 3.14.1 to 3.14.2 ([#109](https://github.com/mongodb-js/mongodb-connection-string-url/issues/109)) ([d6e7654](https://github.com/mongodb-js/mongodb-connection-string-url/commit/d6e7654349030288d4f9350851f59b3c58665804))
+
 ## [7.0.0](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v4.0.0-alpha...v7.0.0) (2025-11-05)
 
 

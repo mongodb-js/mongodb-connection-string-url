@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { URL, URLSearchParams } from 'whatwg-url';
 import {
   redactValidConnectionString,
   redactConnectionString,
@@ -95,23 +94,20 @@ function caseInsenstiveURLSearchParams<K extends string = string>(Ctor: typeof U
   };
 }
 
-// Abstract middle class to appease TypeScript, see https://github.com/microsoft/TypeScript/pull/37894
-abstract class URLWithoutHost extends URL {
-  abstract get host(): never;
-  abstract set host(value: never);
-  abstract get hostname(): never;
-  abstract set hostname(value: never);
-  abstract get port(): never;
-  abstract set port(value: never);
-  abstract get href(): string;
-  abstract set href(value: string);
-}
-
 class MongoParseError extends Error {
   get name(): string {
     return 'MongoParseError';
   }
 }
+
+// The native URL class declares host, hostname, port, and href as properties
+// in its TypeScript type definitions. ConnectionString needs to override these
+// with accessors, which TypeScript does not allow (TS2611). We work around this
+// by re-typing the URL constructor to omit the conflicting property declarations.
+const URLBase = URL as unknown as {
+  new (url: string | URL, base?: string | URL): Omit<URL, 'host' | 'hostname' | 'port' | 'href' | 'toString'>;
+  prototype: Omit<URL, 'host' | 'hostname' | 'port' | 'href' | 'toString'>;
+};
 
 export interface ConnectionStringParsingOptions {
   looseValidation?: boolean;
@@ -121,7 +117,7 @@ export interface ConnectionStringParsingOptions {
  * Represents a mongodb:// or mongodb+srv:// connection string.
  * See: https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.rst#reference-implementation
  */
-export class ConnectionString extends URLWithoutHost {
+export class ConnectionString extends URLBase {
   _hosts: string[];
 
   // eslint-disable-next-line complexity

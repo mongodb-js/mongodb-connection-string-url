@@ -61,10 +61,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.9.2"
   },
-  "dependencies": {
-    "@types/whatwg-url": "^13.0.0",
-    "whatwg-url": "^14.1.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=20.19.0"
   }

@@ -265,10 +265,12 @@ export class ConnectionString extends URLWithoutHost {
     return redactValidConnectionString(this, options);
   }
 
-  typedSearchParams<T extends Record<string, any>>() {
-    const _sametype =
-      (false as true) && new (caseInsenstiveURLSearchParams<keyof T & string>(URLSearchParams))();
-    return this.searchParams as unknown as typeof _sametype;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  typedSearchParams<T extends {}>() {
+    type CaseInsensitiveParams = InstanceType<
+      ReturnType<typeof caseInsenstiveURLSearchParams<keyof T & string>>
+    >;
+    return this.searchParams as unknown as CaseInsensitiveParams;
   }
 
   [Symbol.for('nodejs.util.inspect.custom')](): any {
@@ -304,7 +306,8 @@ export class ConnectionString extends URLWithoutHost {
  * readPreferenceTags connection string parameters.
  */
 export class CommaAndColonSeparatedRecord<
-  K extends Record<string, unknown> = Record<string, unknown>
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  K extends {} = Record<string, unknown>
 > extends CaseInsensitiveMap<keyof K & string> {
   constructor(from?: string | null) {
     super();

@@ -36,7 +36,7 @@
   ],
   "scripts": {
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"{src,test}/**/*.ts\"",
-    "test": "npm run build && nyc mocha --colors -r ts-node/register test/*.ts",
+    "test": "npm run build && tsd && nyc mocha --colors -r ts-node/register test/*.ts",
     "build": "npm run compile-ts && gen-esm-wrapper . ./.esm-wrapper.mjs",
     "prepack": "npm run build",
     "compile-ts": "tsc -p tsconfig.json"
@@ -59,6 +59,7 @@
     "mocha": "^11.0.1",
     "nyc": "^17.1.0",
     "ts-node": "^10.9.1",
+    "tsd": "^0.33.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
@@ -67,5 +68,14 @@
   },
   "engines": {
     "node": ">=20.19.0"
+  },
+  "tsd": {
+    "directory": "test/types",
+    "compilerOptions": {
+      "strict": true,
+      "target": "esnext",
+      "module": "commonjs",
+      "moduleResolution": "node"
+    }
   }
 }

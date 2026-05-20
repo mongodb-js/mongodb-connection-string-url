@@ -6,22 +6,27 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  id-token: write
 
 name: release
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
     steps:
       - id: release
         uses: googleapis/release-please-action@v4
 
-      # If release-please created a release, publish to npm
-      - if: ${{ steps.release.outputs.release_created }}
-        uses: actions/checkout@v5
-      - if: ${{ steps.release.outputs.release_created }}
-        name: actions/setup
+  publish:
+    needs: [release-please]
+    if: ${{ needs.release-please.outputs.release_created }}
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: actions/setup
         uses: ./.github/actions/setup
-      - if: ${{ steps.release.outputs.release_created }}
-        run: npm publish --provenance --tag latest
+      - run: npm publish --provenance --tag latest

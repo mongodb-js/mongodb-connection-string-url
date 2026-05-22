@@ -132,7 +132,8 @@ describe('ConnectionString', () => {
       'mongodb+srv://a:12345/',
       'mongodbabc://localhost',
       'totallynotamongodb://localhost',
-      'mongodb+srv://Y:X@'
+      'mongodb+srv://Y:X@',
+      'mongodb+srv://user:p@ss@localhost/',
     ]) {
       it(`parsing ${uri} throws an MongoParseError`, () => {
         try {

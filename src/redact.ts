@@ -52,13 +52,17 @@ export function redactConnectionString(
     // squash errors
   }
   if (parsed) {
-    // If we can parse the connection string, use the more precise
-    // redaction logic.
-    options = { ...options, replacementString: '___credentials___' };
-    return parsed
-      .redact(options)
-      .toString()
-      .replace(/___credentials___/g, replacementString);
+    try {
+      // If we can parse the connection string, use the more precise
+      // redaction logic.
+      options = { ...options, replacementString: '___credentials___' };
+      return parsed
+        .redact(options)
+        .toString()
+        .replace(/___credentials___/g, replacementString);
+    } catch {
+      // Also squash errors
+    }
   }
 
   // Note: The regexes here used to use lookbehind assertions, but we dropped that since

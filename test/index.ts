@@ -135,7 +135,13 @@ describe('ConnectionString', () => {
       'mongodb+srv://Y:X@',
       'mongodb+srv://user:p@ss@localhost/',
       'mongodb+srv://us@r:pass@localhost/',
-      'mongodb+srv://user:p@ssw#rd@localhost/'
+      'mongodb+srv://user:p@ssw#rd@localhost/',
+      'mongodb://user:p@ss@localhost/',
+      'mongodb://us@r:pass@localhost/',
+      'mongodb://user:p@ssw#rd@localhost/',
+      'mongodb://user:pass/word@localhost/',
+      'mongodb://user:pass?word@localhost/',
+      'mongodb+srv://us@r:pass@localhost/'
     ]) {
       it(`parsing ${uri} throws an MongoParseError`, () => {
         try {

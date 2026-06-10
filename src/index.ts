@@ -16,7 +16,8 @@ function connectionStringHasValidScheme(connectionString: string) {
 // Adapted from the Node.js driver code:
 // https://github.com/mongodb/node-mongodb-native/blob/350d14fde5b24480403313cfe5044f6e4b25f6c9/src/connection_string.ts#L146-L206
 const HOSTS_REGEX =
-  /^(?<protocol>[^/]+):\/\/(?:(?<username>[^:@]*)(?::(?<password>[^/?]*))?@)?(?<hosts>(?!:)[^/?@]*)(?<rest>.*)/;
+  /^(?<protocol>[^/]+):\/\/(?:(?<username>[^:@]*)(?::(?<password>[^@]*))?@)?(?<hosts>(?!:)[^/?@]*)(?<rest>.*)/;
+
 class CaseInsensitiveMap<K extends string = string> extends Map<K, string> {
   delete(name: K): boolean {
     return super.delete(this._normalizeKey(name));
@@ -175,6 +176,10 @@ export class ConnectionString extends URLWithoutHost {
 
     try {
       super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
+
+      if ((username ?? '') !== this.username || (password ?? '') !== this.password) {
+        throw new MongoParseError(`Invalid connection string ${uri}. Username and password must be percent-encoded.`);
+      }
     } catch (err: any) {
       if (looseValidation) {
         // Call the constructor again, this time with loose validation off,
@@ -255,6 +260,11 @@ export class ConnectionString extends URLWithoutHost {
   }
 
   clone(): ConnectionString {
+    console.log({
+      toString: this.toString(),
+      username: this.username,
+      password: this.password,
+    })
     return new ConnectionString(this.toString(), {
       looseValidation: true
     });

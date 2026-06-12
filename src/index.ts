@@ -167,6 +167,11 @@ export class ConnectionString extends URLWithoutHost {
       if (password?.match(illegalCharacters)) {
         throw new MongoParseError('Password contains unescaped characters');
       }
+
+      // unexpected @ encountered
+      if (rest?.match(/^([^?]*)@/)) {
+        throw new MongoParseError(`Invalid connection string ${uri}`);
+      }
     }
 
     let authString = '';

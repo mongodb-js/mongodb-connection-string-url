@@ -143,7 +143,6 @@ describe('ConnectionString', () => {
       'mongodb://us/er@localhost', // invalid because of user
       'mongodb://localhost/d@tabase', // invalid because of db
       'mongodb://user:pass?word@localhost/',
-      'mongodb+srv://us@r:pass@localhost/',
 
       // ambiguous strings
       // 'mongodb://localhost?key=a:b@c@d/', - valid

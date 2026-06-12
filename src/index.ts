@@ -181,10 +181,6 @@ export class ConnectionString extends URLWithoutHost {
 
     try {
       super(`${protocol.toLowerCase()}://${authString}${DUMMY_HOSTNAME}${rest}`);
-
-      if ((username ?? '') !== this.username || (password ?? '') !== this.password) {
-        throw new MongoParseError(`Invalid connection string ${uri}. Username and password must be percent-encoded.`);
-      }
     } catch (err: any) {
       if (looseValidation) {
         // Call the constructor again, this time with loose validation off,

@@ -142,11 +142,7 @@ describe('ConnectionString', () => {
       'mongodb://user:pass/word@localhost/',
       'mongodb://us/er@localhost', // invalid because of user
       'mongodb://localhost/d@tabase', // invalid because of db
-      'mongodb://user:pass?word@localhost/',
-
-      // ambiguous strings
-      // 'mongodb://localhost?key=a:b@c@d/', - valid
-      // 'mongodb://u?er:p@ss@localhost/' - invalid
+      'mongodb://user:pass?word@localhost/'
     ]) {
       it(`parsing ${uri} throws an MongoParseError`, () => {
         try {

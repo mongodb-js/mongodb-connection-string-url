@@ -169,7 +169,7 @@ export class ConnectionString extends URLWithoutHost {
       }
 
       // unexpected @ encountered
-      if (rest?.match(/^[^?]*@/)) {
+      if (rest?.match(/^[^/?]*@/)) {
         throw new MongoParseError(`Invalid connection string "${uri}"`);
       }
     }

@@ -135,6 +135,7 @@ describe('ConnectionString', () => {
       'mongodb+srv://Y:X@',
       'mongodb+srv://user:p@ss@localhost/',
       'mongodb+srv://us@r:pass@localhost/',
+      'mongodb+srv://us@r:p@ss@localhost/',
       'mongodb+srv://user:p@ssw#rd@localhost/',
       'mongodb://user:p@ss@localhost/',
       'mongodb://us@r:pass@localhost/',

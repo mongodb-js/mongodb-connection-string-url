@@ -102,7 +102,7 @@ describe('ConnectionString', () => {
           isSRV: false,
           hosts: ['localhost']
         }
-      },
+      }
     ]) {
       it(`parses ${uri} correctly`, () => {
         const cs = new ConnectionString(uri);

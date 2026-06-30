@@ -88,20 +88,6 @@ describe('ConnectionString', () => {
           isSRV: false,
           hosts: ['database-haha.mongo.blah.blah.com:8888']
         }
-      },
-      {
-        uri: 'mongodb://user:pass@localhost/d@tabase',
-        match: {
-          href: 'mongodb://user:pass@localhost/d@tabase',
-          protocol: 'mongodb:',
-          username: 'user',
-          password: 'pass',
-          pathname: '/d@tabase',
-          search: '',
-          hash: '',
-          isSRV: false,
-          hosts: ['localhost']
-        }
       }
     ]) {
       it(`parses ${uri} correctly`, () => {

@@ -88,6 +88,20 @@ describe('ConnectionString', () => {
           isSRV: false,
           hosts: ['database-haha.mongo.blah.blah.com:8888']
         }
+      },
+      {
+        uri: 'mongodb://user:pass@localhost/d@tabase',
+        match: {
+          href: 'mongodb://user:pass@localhost/d@tabase',
+          protocol: 'mongodb:',
+          username: 'user',
+          password: 'pass',
+          pathname: '/d@tabase',
+          search: '',
+          hash: '',
+          isSRV: false,
+          hosts: ['localhost']
+        }
       }
     ]) {
       it(`parses ${uri} correctly`, () => {
@@ -132,7 +146,17 @@ describe('ConnectionString', () => {
       'mongodb+srv://a:12345/',
       'mongodbabc://localhost',
       'totallynotamongodb://localhost',
-      'mongodb+srv://Y:X@'
+      'mongodb+srv://Y:X@',
+      'mongodb+srv://user:p@ss@localhost/',
+      'mongodb+srv://us@r:pass@localhost/',
+      'mongodb+srv://us@r:p@ss@localhost/',
+      'mongodb+srv://user:p@ssw#rd@localhost/',
+      'mongodb://user:p@ss@localhost/',
+      'mongodb://us@r:pass@localhost/',
+      'mongodb://user:p@ssw#rd@localhost/',
+      'mongodb://user:pass/word@localhost/',
+      'mongodb://us/er@localhost',
+      'mongodb://user:pass?word@localhost/'
     ]) {
       it(`parsing ${uri} throws an MongoParseError`, () => {
         try {

@@ -135,14 +135,14 @@ export class ConnectionString extends URLWithoutHost {
 
     const match = uri.match(HOSTS_REGEX);
     if (!match) {
-      throw new MongoParseError(`Invalid connection string`);
+      throw new MongoParseError('Invalid connection string');
     }
 
     const { protocol, username, password, hosts, rest } = match.groups ?? {};
 
     if (!looseValidation) {
       if (!protocol || !hosts) {
-        throw new MongoParseError(`Protocol and host list are required in the uri`);
+        throw new MongoParseError('Protocol and host list are required in the uri');
       }
 
       try {
@@ -170,7 +170,7 @@ export class ConnectionString extends URLWithoutHost {
 
       // unexpected @ encountered
       if (rest?.match(/^[^/?]*@/)) {
-        throw new MongoParseError(`Invalid connection string`);
+        throw new MongoParseError('Invalid connection string');
       }
     }
 

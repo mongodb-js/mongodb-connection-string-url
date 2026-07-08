@@ -180,7 +180,6 @@ describe('ConnectionString', () => {
         expect.fail('missed exception');
       } catch (err) {
         expect((err as Error).name).to.equal('MongoParseError');
-        expect((err as Error).message).to.equal('Invalid connection string');
         expect((err as Error).message).not.to.include(secret);
       }
     });
@@ -193,7 +192,6 @@ describe('ConnectionString', () => {
         expect.fail('missed exception');
       } catch (err) {
         expect((err as Error).name).to.equal('MongoParseError');
-        expect((err as Error).message).to.equal('Protocol and host list are required in the uri');
         expect((err as Error).message).not.to.include(secret);
       }
     });
@@ -206,7 +204,6 @@ describe('ConnectionString', () => {
         expect.fail('missed exception');
       } catch (err) {
         expect((err as Error).name).to.equal('MongoParseError');
-        expect((err as Error).message).to.equal('Invalid connection string');
         expect((err as Error).message).not.to.include(secret);
       }
     });

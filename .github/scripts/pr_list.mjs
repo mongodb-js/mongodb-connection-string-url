@@ -12,7 +12,7 @@ const historyFilePath = path.join(__dirname, '..', '..', 'HISTORY.md');
  * @returns {string[]}
  */
 function parsePRList(history) {
-  const prRegexp = /node-mongodb-native\/issues\/(?<prNum>\d+)\)/iu;
+  const prRegexp = /mongodb-connection-string-url\/issues\/(?<prNum>\d+)\)/iu;
   return Array.from(
     new Set(
       history

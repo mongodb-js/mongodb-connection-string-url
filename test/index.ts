@@ -171,6 +171,44 @@ describe('ConnectionString', () => {
     }
   });
 
+  context('error messages do not disclose the connection string', () => {
+    it('does not include the uri when it does not match the expected format', () => {
+      const secret = 'sw0rdf1sh';
+      try {
+        // eslint-disable-next-line no-new
+        new ConnectionString(`notauri${secret}`, { looseValidation: true });
+        expect.fail('missed exception');
+      } catch (err) {
+        expect((err as Error).name).to.equal('MongoParseError');
+        expect((err as Error).message).not.to.include(secret);
+      }
+    });
+
+    it('does not include the uri when the protocol or host list is missing', () => {
+      const secret = 'sw0rdf1sh';
+      try {
+        // eslint-disable-next-line no-new
+        new ConnectionString(`mongodb:///${secret}`);
+        expect.fail('missed exception');
+      } catch (err) {
+        expect((err as Error).name).to.equal('MongoParseError');
+        expect((err as Error).message).not.to.include(secret);
+      }
+    });
+
+    it('does not include the uri or password when an unexpected @ is encountered', () => {
+      const secret = 'sw0rdf1sh';
+      try {
+        // eslint-disable-next-line no-new
+        new ConnectionString(`mongodb://user:${secret}@ss@localhost/`);
+        expect.fail('missed exception');
+      } catch (err) {
+        expect((err as Error).name).to.equal('MongoParseError');
+        expect((err as Error).message).not.to.include(secret);
+      }
+    });
+  });
+
   context('after modifications', () => {
     it('allows changing hosts', () => {
       const cs = new ConnectionString('mongodb://localhost');

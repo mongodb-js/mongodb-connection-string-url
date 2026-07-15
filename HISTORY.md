@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.2](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v7.0.1...v7.0.2) (2026-07-09)
+
+
+### Bug Fixes
+
+* **NODE-7449:** loosen type requirement for generics on typedSearchParams and CommaAndColonSeparatedRecord ([#116](https://github.com/mongodb-js/mongodb-connection-string-url/issues/116)) ([69bd1af](https://github.com/mongodb-js/mongodb-connection-string-url/commit/69bd1af48905fc306cf81c0aaf7b1c5acf33ca73))
+* **NODE-7597:** handle unescaped @ in the password COMPASS-10688 ([#125](https://github.com/mongodb-js/mongodb-connection-string-url/issues/125)) ([9b39443](https://github.com/mongodb-js/mongodb-connection-string-url/commit/9b39443e7f5d8a33d89e53cbac240ba42e9e26d2))
+* **NODE-7663:** uri disclosure on error ([#131](https://github.com/mongodb-js/mongodb-connection-string-url/issues/131)) ([7a1f4ce](https://github.com/mongodb-js/mongodb-connection-string-url/commit/7a1f4ced600426fb276660f0f4ac96af3deddd44))
+
 ## [7.0.1](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v7.0.0...v7.0.1) (2026-01-26)
 
 

@@ -19,7 +19,18 @@ console.log(cs.href); // 'mongodb://localhost/?readPreference=secondary'
 - The `.href` property cannot be set, only read
 - There is an additional `.isSRV` property, set to `true` for `mongodb+srv://`
 - There is an additional `.clone()` utility method on the prototype
+  
+## AI Agent Configuration
+This repository uses [agentskills.io](https://agentskills.io) conventions for AI coding agent
+instructions. `AGENTS.md` is the canonical source of truth — tool-specific files like `CLAUDE.md`
+are generated references.
 
+### Adding a nested AGENTS.md
+
+1. Create an `AGENTS.md` in the target directory.
+2. Run `scripts/symlink-claude-md.sh` to generate the companion `CLAUDE.md`.
+3. Stage and commit both files.
+ 
 ## LICENSE
 
 Apache-2.0

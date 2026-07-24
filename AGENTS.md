@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository. This file is the s
 
 ## Project Overview
 
-A [specification](https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.md)-compliant parser library for MongoDB connection string URLs, built on the WhatWG URL API.
+A parser library for MongoDB connection string URLs.
 
 ## Commands
 
@@ -28,6 +28,10 @@ npm run compile-ts   # type-check/compile only (fastest feedback)
 - **Errors** — throw `MongoParseError` for invalid connection strings; messages in sentence case, no trailing period. Never include the raw URI (credentials) in error messages.
 - **Formatting** — Prettier via eslint: single quotes, 2-space indent. Run `npm run lint` before committing.
 - **Tests** — every behavior change needs a mocha test; type-signature changes need a tsd test in `test/types/`.
+
+## Other Important Information
+
+- Changes must be compliant with the [connection string spec](https://github.com/mongodb/specifications/blob/master/source/connection-string/connection-string-spec.md).
 
 ## Commit Messages
 

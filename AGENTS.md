@@ -35,7 +35,7 @@ npm run compile-ts   # type-check/compile only (fastest feedback)
 
 ## Commit Messages
 
-[Conventional Commits](https://www.conventionalcommits.org/) with a Jira ticket: `<type>(NODE-XXXX): <subject>` — types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`; breaking changes use `!` (e.g. `feat(NODE-XXXX)!: …`).
+[Conventional Commits](https://www.conventionalcommits.org/) optionally with a Jira ticket: `<type>(NODE-XXXX): <subject>` — types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`; breaking changes use `!` (e.g. `feat(NODE-XXXX)!: …`). This rule is mandatory for PR descriptions, because that is what ends up in the history. The individual commits inside a PR do not have to follow this convention, because we squash PR commits.
 
 ## Related Repositories
 

@@ -39,7 +39,8 @@
     "test": "npm run build && tsd && nyc mocha --colors -r ts-node/register test/*.ts",
     "build": "npm run compile-ts && gen-esm-wrapper . ./.esm-wrapper.mjs",
     "prepack": "npm run build",
-    "compile-ts": "tsc -p tsconfig.json"
+    "compile-ts": "tsc -p tsconfig.json",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "license": "Apache-2.0",
   "devDependencies": {

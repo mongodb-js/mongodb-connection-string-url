@@ -192,7 +192,7 @@ export class ConnectionString extends URLWithoutHost {
         });
       }
       if (typeof err.message === 'string') {
-        err.message = err.message.replace(DUMMY_HOSTNAME, hosts);
+        err.message = err.message.replace(DUMMY_HOSTNAME, () => hosts);
       }
       throw err;
     }
@@ -257,7 +257,7 @@ export class ConnectionString extends URLWithoutHost {
   }
 
   toString(): string {
-    return super.toString().replace(DUMMY_HOSTNAME, this.hosts.join(','));
+    return super.toString().replace(DUMMY_HOSTNAME, () => this.hosts.join(','));
   }
 
   clone(): ConnectionString {

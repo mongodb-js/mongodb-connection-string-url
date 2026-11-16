@@ -250,6 +250,46 @@ describe('ConnectionString', () => {
     });
   });
 
+  context('serializing hosts', () => {
+    // String.prototype.replace() treats these sequences in a string
+    // replacement as special patterns. Hosts must be serialized verbatim.
+    const dollarHosts = ["a$'b", 'a$`b', 'a$&b', 'a$$b', 'a$1b', 'a$<x>b', 'a$b', '$'];
+
+    for (const host of dollarHosts) {
+      context(`when a host contains ${JSON.stringify(host)}`, () => {
+        const uri = `mongodb://user:pass@${host}/db?appName=app&w=1`;
+
+        it('serializes the host verbatim', () => {
+          const cs = new ConnectionString(uri);
+          expect(cs.hosts).to.deep.equal([host]);
+          expect(cs.toString()).to.equal(uri);
+          expect(cs.href).to.equal(uri);
+        });
+
+        it('round-trips through clone() and re-parsing', () => {
+          const cs = new ConnectionString(uri);
+          for (const copy of [cs.clone(), new ConnectionString(cs.toString())]) {
+            expect(copy.hosts).to.deep.equal([host]);
+            expect(copy.pathname).to.equal('/db');
+            expect([...copy.searchParams]).to.deep.equal([...cs.searchParams]);
+            expect(copy.toString()).to.equal(uri);
+          }
+        });
+
+        it('serializes the host verbatim with loose validation', () => {
+          const cs = new ConnectionString(uri, { looseValidation: true });
+          expect(cs.toString()).to.equal(uri);
+        });
+
+        it('serializes the host verbatim when assigned through hosts', () => {
+          const cs = new ConnectionString('mongodb://localhost/?w=1');
+          cs.hosts = [host, 'other:27018'];
+          expect(cs.toString()).to.equal(`mongodb://${host},other:27018/?w=1`);
+        });
+      });
+    }
+  });
+
   context('URL methods that do not apply to connection strings as-is', () => {
     it('throws/returns dummy values', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

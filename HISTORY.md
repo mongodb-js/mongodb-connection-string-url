@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.3](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v7.0.2...v7.0.3) (2026-11-16)
+
+
+### Bug Fixes
+
+* **COMPASS-11374:** use replacer functions when substituting hosts in toString and error messages ([#150](https://github.com/mongodb-js/mongodb-connection-string-url/issues/150)) ([336c330](https://github.com/mongodb-js/mongodb-connection-string-url/commit/336c3306af76dde9ca4001a51ad2ac5562a8eb1f))
+
 ## [7.0.2](https://github.com/mongodb-js/mongodb-connection-string-url/compare/v7.0.1...v7.0.2) (2026-07-09)
 
 
